@@ -2,7 +2,7 @@
 
 In a failover configuration, we observed an issue where, after a temporary unavailability of all brokers (e.g., due to a
 short network interruption), the consumer failed to properly resume message consumption. Although the brokers became
-fully available again, the consumer either received only every second message for a period of time or, in some cases,
+fully available again, sometimes the consumer either received only every second message for a period of time or, in some cases,
 stopped receiving messages altogether.
 
 ## Setup
@@ -60,6 +60,7 @@ stopped receiving messages altogether.
   counter with the last one recieved. It will print if it lost any messages (number is missing)
 - cut the connection from hostC (listener) to both brokers (hostA and hostB) while the publisher (hostD) still publishes
   messages
+- resume the network connection
 - check the missing messages
 
 ## recreate information
