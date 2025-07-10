@@ -16,12 +16,12 @@ import org.apache.activemq.artemis.jms.client.ActiveMQSession;
  */
 public class SimpleListenerCount implements MessageListener
 {
-	ActiveMQConnectionFactory connectionFactory = null;
-	ActiveMQConnection connection = null;
-	ActiveMQMessageConsumer consumer = null;
-	ActiveMQSession session = null;
-	String brokerUrl = "(tcp://DEREGDEVBUS01:6666,tcp://DEREGDEVBUS02:6666)?failoverAttempts=-1";
-	String topicName = "count.topic";
+	private ActiveMQConnectionFactory connectionFactory = null;
+	private ActiveMQConnection connection = null;
+	private ActiveMQMessageConsumer consumer = null;
+	private ActiveMQSession session = null;
+	String brokerUrl = "(tcp://hostA:6666,tcp://hostB:6666)?failoverAttempts=-1";
+	private String topicName = "count.topic";
 	boolean exited = false;
 	int lastCount = 0;
 	int missedMessages = 0;

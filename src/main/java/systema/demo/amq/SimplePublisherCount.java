@@ -18,7 +18,7 @@ public class SimplePublisherCount
 {
 	private ActiveMQConnectionFactory connectionFactory = null;
 	private ActiveMQConnection connection = null;
-	private String brokerUrl = "(tcp://DEREGDEVBUS01:6666,tcp://DEREGDEVBUS02:6666)?failoverAttempts=-1";
+	 String brokerUrl = "(tcp://hostA:6666,tcp://hostB:6666)?failoverAttempts=-1";
 	private String topicName = "count.topic";
 	private long ttlOnTopics = 180000;
 	private ActiveMQSession session;
