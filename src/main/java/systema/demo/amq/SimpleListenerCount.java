@@ -19,8 +19,11 @@ public class SimpleListenerCount implements MessageListener
 	private ActiveMQConnectionFactory connectionFactory = null;
 	private ActiveMQConnection connection = null;
 	private ActiveMQMessageConsumer consumer = null;
+	private int threeCorrectCounter = 3;
 	private ActiveMQSession session = null;
-	String brokerUrl = "(tcp://hostA:6666,tcp://hostB:6666)?failoverAttempts=-1";
+	String brokerUrl =
+			"(tcp://a:6666,tcp://b:6666)?failoverAttempts=-1;connectionTTL=120000;useTopologyForLoadBalancing=false";
+	private String clientId = "testbestasd";
 	private String topicName = "count.topic";
 	boolean exited = false;
 	int lastCount = 0;
@@ -28,6 +31,11 @@ public class SimpleListenerCount implements MessageListener
 
 	public SimpleListenerCount()
 	{
+	}
+
+	private void resetThreeCorrectCounter()
+	{
+		threeCorrectCounter = 3;
 	}
 
 	/**
@@ -63,8 +71,12 @@ public class SimpleListenerCount implements MessageListener
 			}
 			if ( (lastCount + 1) == messageCount )
 			{
-				System.out.println("*********  handleEventNow received message with count: " + messageCount +
-				                   " correctly. Total missed messages = " + missedMessages);
+				if ( threeCorrectCounter > 0 )
+				{
+					System.out.println("*********  handleEventNow received message with count: " + messageCount +
+					                   " correctly. Total missed messages = " + missedMessages);
+					threeCorrectCounter--;
+				}
 			}
 			else
 			{
@@ -72,6 +84,7 @@ public class SimpleListenerCount implements MessageListener
 				System.out.println("********* previous count=" + lastCount +
 				                   " current count=" + messageCount +
 				                   " missed total messages since startup: " + missedMessages);
+				resetThreeCorrectCounter();
 			}
 			lastCount = messageCount;
 		}
@@ -98,7 +111,8 @@ public class SimpleListenerCount implements MessageListener
 	{
 		System.out.println("Attempt to create authentication disabled connection factory.");
 		connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
-		System.out.println("Attempt to create  connection");
+		connectionFactory.setClientID(clientId);
+		System.out.println("Attempt to create  connection with url: " + brokerUrl);
 		connection = (ActiveMQConnection) connectionFactory.createConnection();
 		System.out.println("Connection established.");
 		connection.start();
@@ -168,14 +182,19 @@ public class SimpleListenerCount implements MessageListener
 	{
 		SimpleListenerCount client = new SimpleListenerCount();
 
-		client.connect();
-		if ( args.length == 1 )
+		int length = args.length;
+		if ( length >= 1 )
 		{
+			System.out.println("set broker url from arguments");
 			client.brokerUrl = args[0];
 		}
-		if ( args.length == 2 )
+		if ( length >= 2 )
 		{
-			client.topicName = args[1];
+			client.clientId = args[1];
+		}
+		if ( length == 3 )
+		{
+			client.topicName = args[2];
 		}
 		try
 		{

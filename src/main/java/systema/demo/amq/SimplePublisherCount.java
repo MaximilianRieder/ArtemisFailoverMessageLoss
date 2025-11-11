@@ -18,7 +18,8 @@ public class SimplePublisherCount
 {
 	private ActiveMQConnectionFactory connectionFactory = null;
 	private ActiveMQConnection connection = null;
-	 String brokerUrl = "(tcp://hostA:6666,tcp://hostB:6666)?failoverAttempts=-1";
+	 //String brokerUrl = "(tcp://hostA:6666,tcp://hostB:6666)?failoverAttempts=-1";
+	 String brokerUrl = "tcp://a:6666";
 	private String topicName = "count.topic";
 	private long ttlOnTopics = 180000;
 	private ActiveMQSession session;
@@ -144,9 +145,10 @@ public class SimplePublisherCount
 	public static void main(String[] args)
 	{
 		SimplePublisherCount client = new SimplePublisherCount();
-		if ( args.length == 1 )
+		if ( args.length >= 1 )
 		{
 			client.brokerUrl = args[0];
+			System.out.println("set broker url from arguments");
 		}
 		if ( args.length == 2 )
 		{
